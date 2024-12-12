@@ -1,0 +1,6 @@
+<h1>Dobrodošli u Barberweb App</h1>
+<ul>
+    {% for barber in barbers %}
+        <li>{{ barber.name }} - {{ barber.bio }}</li>
+    {% endfor %}
+</ul>
