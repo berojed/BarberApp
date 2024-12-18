@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ object.name }} - Service Details</title>
+    <style>
+        body {
+            font-family: 'Courier New', Courier, monospace;
+            background: #eef2f7;
+            padding: 20px;
+        }
+        .container {
+            background: #ffffff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+        h1 {
+            color: #222;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>{{ object.name }}</h1>
+        <p>{{ object.description }}</p>
+        <p><strong>Price:</strong> {{ object.price }} USD</p>
+    </div>
+</body>
+</html>

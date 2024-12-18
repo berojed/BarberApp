@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Review Details</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            background-color: #f8f9fa;
+            margin: 20px;
+        }
+        .container {
+            max-width: 700px;
+            margin: auto;
+            background: #ffffff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            color: #34495e;
+        }
+        p {
+            font-size: 16px;
+            margin: 8px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Review by {{ object.customer.name }}</h1>
+        <p><strong>Rating:</strong> {{ object.rating }}/5</p>
+        <p>{{ object.comment }}</p>
+        <p><strong>Date:</strong> {{ object.date_posted }}</p>
+    </div>
+</body>
+</html>

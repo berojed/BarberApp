@@ -11,12 +11,16 @@ class Barber(models.Model):
     bio = models.CharField(max_length=50)
     rating = models.IntegerField()
 
+    class Meta: ordering = ['name']
+
 class Service(models.Model):
     barber=models.ForeignKey(Barber, on_delete=models.CASCADE, related_name='services')
     name=models.CharField(max_length=50)
     duration=models.IntegerField()
     description=models.CharField(max_length=50)
     price=models.IntegerField()
+
+    class Meta: ordering = ['name']
 
     def __str__(self):
         return f"{self.name} - {self.price} EUR"
@@ -28,6 +32,8 @@ class Appointment(models.Model):
     date=models.DateField()
     created_at=models.DateTimeField()
     is_confirmed=models.BooleanField(default=False)
+
+    class Meta: ordering = ['date']
 
     def __str__(self):
         return f"Appointment on {self.date} at {self.time} with {self.barber}"
@@ -48,6 +54,8 @@ class Reviews(models.Model):
     rating=models.PositiveBigIntegerField()
     comment=models.CharField(max_length=100)
     posted_at=models.DateField(auto_now_add=True)
+
+    class Meta: ordering = ['-rating']
 
     def __str__(self):
         return f"Rating for {self.barber} by {self.user}"

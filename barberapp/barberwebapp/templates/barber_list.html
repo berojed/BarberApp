@@ -1,0 +1,27 @@
+<form method="get">
+    <input type="text" name="q" placeholder="Pretraži barbere..." value="{{ request.GET.q }}">
+    <button type="submit">Pretraži</button>
+</form>
+
+<ul>
+    {% for barber in barberi %}
+        <li>
+            <a href="{{ barber.get_absolute_url }}">{{ barber.name }}</a>
+            <p>{{ barber.bio }}</p>
+            <p>Rating: {{ barber.rating }}</p>
+        </li>
+    {% endfor %}
+</ul>
+
+<!-- Paginate -->
+<div>
+    {% if is_paginated %}
+        {% if page_obj.has_previous %}
+            <a href="?page={{ page_obj.previous_page_number }}">Prethodna</a>
+        {% endif %}
+        <span>Stranica {{ page_obj.number }} od {{ page_obj.paginator.num_pages }}</span>
+        {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}">Sljedeća</a>
+        {% endif %}
+    {% endif %}
+</div>

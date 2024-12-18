@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Services</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8fafc;
+            margin: 20px;
+        }
+        .container {
+            max-width: 1000px;
+            margin: auto;
+            padding: 20px;
+        }
+        h1 {
+            color: #444;
+        }
+        .service {
+            background: #ffffff;
+            margin: 10px 0;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            transition: box-shadow 0.3s;
+        }
+        .service:hover {
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+        a {
+            text-decoration: none;
+            color: #007bff;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Available Services</h1>
+        {% for service in object_list %}
+        <div class="service">
+            <h2><a href="{{ service.get_absolute_url }}">{{ service.name }}</a></h2>
+            <p>{{ service.description }}</p>
+        </div>
+        {% empty %}
+        <p>No services available at the moment.</p>
+        {% endfor %}
+    </div>
+</body>
+</html>
