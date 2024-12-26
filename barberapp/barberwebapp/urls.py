@@ -9,6 +9,10 @@ from .views import (
     create_service, update_service, ServiceDeleteView, 
     create_appointment, update_appointment, AppointmentDeleteView, 
     create_review, update_review, ReviewDeleteView,
+    create_barber, update_barber, BarberDeleteView, 
+    create_service, update_service, ServiceDeleteView, 
+    create_appointment, update_appointment, AppointmentDeleteView, 
+    create_review, update_review, ReviewDeleteView,
 )
 from . import urls_api
 
