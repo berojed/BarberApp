@@ -5,6 +5,10 @@ from .views import (
     ServiceListView, ServiceDetailView,
     AppointmentListView, AppointmentDetailView,
     ReviewsListView, ReviewsDetailView,
+    create_barber, update_barber, BarberDeleteView, 
+    create_service, update_service, ServiceDeleteView, 
+    create_appointment, update_appointment, AppointmentDeleteView, 
+    create_review, update_review, ReviewDeleteView,
 )
 
 app_name = 'barberwebapp'
@@ -21,4 +25,16 @@ urlpatterns = [
     path('appointments/<int:pk>/', AppointmentDetailView.as_view(), name='appointment_detail'),
     path('reviews/', ReviewsListView.as_view(), name='reviews_list'),
     path('reviews/<int:pk>/', ReviewsDetailView.as_view(), name='reviews_detail'),
+    path('barbers/create/', create_barber, name='create_barber'), 
+    path('barbers/<int:pk>/update/', update_barber, name='update_barber'), 
+    path('barbers/<int:pk>/delete/', BarberDeleteView.as_view(), name='delete_barber'), 
+    path('services/create/', create_service, name='create_service'), 
+    path('services/<int:pk>/update/', update_service, name='update_service'), 
+    path('services/<int:pk>/delete/', ServiceDeleteView.as_view(), name='delete_service'), 
+    path('appointments/create/', create_appointment, name='create_appointment'), 
+    path('appointments/<int:pk>/update/', update_appointment, name='update_appointment'), 
+    path('appointments/<int:pk>/delete/', AppointmentDeleteView.as_view(), name='delete_appointment'), 
+    path('reviews/create/', create_review, name='create_review'), 
+    path('reviews/<int:pk>/update/', update_review, name='update_review'), 
+    path('reviews/<int:pk>/delete/', ReviewDeleteView.as_view(), name='delete_review'),
 ]
