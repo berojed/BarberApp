@@ -3,6 +3,9 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import authenticate, login
 from django.views.generic import ListView, DetailView
 from .models import User,Barber,Service, Appointment, WorkingHours, Reviews
+from rest_framework import viewsets
+from .serializers import BarberSerializer
+from rest_framework.permissions import IsAuthenticated
 
 # Create your views here.
 
@@ -129,5 +132,12 @@ class ReviewsDetailView(DetailView):
     model = Reviews
     template_name = 'reviews_detail.html'
     context_object_name = 'review'
+
+
+class BarberViewSet(viewsets.ModelViewSet):
+    queryset = Barber.objects.all()
+    serializer_class = BarberSerializer
+    permission_classes = [IsAuthenticated]
+
 
     

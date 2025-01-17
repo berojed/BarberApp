@@ -1,4 +1,4 @@
-from django.urls import path
+from django.urls import path, include
 from . import views
 from .views import (
     BarberListView, BarberDetailView,
@@ -6,6 +6,7 @@ from .views import (
     AppointmentListView, AppointmentDetailView,
     ReviewsListView, ReviewsDetailView,
 )
+from . import urls_api
 
 app_name = 'barberwebapp'
 
@@ -21,4 +22,5 @@ urlpatterns = [
     path('appointments/<int:pk>/', AppointmentDetailView.as_view(), name='appointment_detail'),
     path('reviews/', ReviewsListView.as_view(), name='reviews_list'),
     path('reviews/<int:pk>/', ReviewsDetailView.as_view(), name='reviews_detail'),
+    path('api/', include(urls_api)),
 ]
