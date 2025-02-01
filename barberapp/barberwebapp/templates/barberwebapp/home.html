@@ -1,16 +1,49 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dobrodošli u Barberweb App</title>
-</head>
-<body>
-    <h1>Dobrodošli u Barberweb App</h1>
-    <ul>
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-5">
+  <h1 class="mb-4">Rezervirajte termin za šišanje</h1>
+  <div class="row">
+    <!-- Prikaz dostupnih frizera -->
+    <div class="col-md-6">
+      <h2>Naši frizeri</h2>
+      <ul class="list-group">
         {% for barber in barbers %}
-            <li>{{ barber.name }} - {{ barber.bio }}</li>
+          <li class="list-group-item">
+            <h5>{{ barber.name }}</h5>
+            <p>{{ barber.bio }}</p>
+          </li>
+        {% empty %}
+          <li class="list-group-item">Trenutno nema dostupnih frizera.</li>
         {% endfor %}
-    </ul>
-</body>
-</html>
+      </ul>
+    </div>
+    <!-- Forma za rezervaciju termina -->
+    <div class="col-md-6">
+      <h2>Rezervacija termina</h2>
+      <form method="POST" action="{% url 'barberwebapp:create_appointment' %}">
+        {% csrf_token %}
+        <div class="mb-3">
+          <label for="barber" class="form-label">Izaberite frizera</label>
+          <select id="barber" name="barber" class="form-select" required>
+            <option value="">-- Odaberite frizera --</option>
+            {% for barber in barbers %}
+              <option value="{{ barber.id }}">{{ barber.name }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="mb-3">
+          <label for="date" class="form-label">Datum</label>
+          <input type="date" id="date" name="date" class="form-control" required>
+        </div>
+        <div class="mb-3">
+          <label for="time" class="form-label">Vrijeme</label>
+          <input type="time" id="time" name="time" class="form-control" required>
+        </div>
+        <button type="submit" class="btn btn-primary">Rezerviraj termin</button>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}
