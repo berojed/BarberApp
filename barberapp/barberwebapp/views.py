@@ -6,8 +6,9 @@ from .models import User,Barber,Service, Appointment, WorkingHours, Reviews
 from .forms import BarberForm, ServiceForm, AppointmentForm, ReviewForm
 from django.urls import reverse_lazy
 from django.views.generic import DeleteView
-
-# Create your views here.
+from rest_framework import viewsets
+from .serializers import BarberSerializer
+from rest_framework.permissions import IsAuthenticated
 
 
 def index(request):
@@ -44,9 +45,6 @@ def register(request):
     context = {'form': form}
 
     return render(request, 'registration/register.html', context)
-
-
-
 
 class BarberListView(ListView):
     model = Barber
@@ -244,9 +242,7 @@ class ReviewDeleteView(DeleteView):
     success_url = reverse_lazy('reviews_list')
 
 
-
-
-
-
-
-    
+class BarberViewSet(viewsets.ModelViewSet):
+    queryset = Barber.objects.all()
+    serializer_class = BarberSerializer
+    permission_classes = [IsAuthenticated]
