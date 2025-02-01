@@ -9,18 +9,16 @@ from .views import (
     create_service, update_service, ServiceDeleteView, 
     create_appointment, update_appointment, AppointmentDeleteView, 
     create_review, update_review, ReviewDeleteView,
-    create_barber, update_barber, BarberDeleteView, 
-    create_service, update_service, ServiceDeleteView, 
-    create_appointment, update_appointment, AppointmentDeleteView, 
-    create_review, update_review, ReviewDeleteView,
 )
 from . import urls_api
 
 app_name = 'barberwebapp'
 
 urlpatterns = [
-    path('', views.home, name='home'),
-    path('profile/', views.profile, name='profile'),
+    path('home/', views.home, name='home'),
+    path('register/', views.register_view, name='register'),
+    path('logout/', views.logout_view, name='logout'),
+    path('profile/', views.profile_view, name='profile'),
     path('admin-dashboard/', views.admin_dashboard, name='admin_dashboard'),
     path('barbers/', BarberListView.as_view(), name='barber_list'),
     path('barbers/<int:pk>/', BarberDetailView.as_view(), name='barber_detail'),

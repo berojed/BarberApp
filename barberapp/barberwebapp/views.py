@@ -2,6 +2,8 @@ from django.shortcuts import redirect, render,get_object_or_404
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import authenticate, login
 from django.views.generic import ListView, DetailView
+
+from barberapp.settings import LOGOUT_REDIRECT_URL
 from .models import User,Barber,Service, Appointment, WorkingHours, Reviews
 from .forms import BarberForm, ServiceForm, AppointmentForm, ReviewForm
 from django.urls import reverse_lazy
@@ -9,6 +11,8 @@ from django.views.generic import DeleteView
 from rest_framework import viewsets
 from .serializers import BarberSerializer
 from rest_framework.permissions import IsAuthenticated
+from django.contrib import messages
+from django.contrib.auth.decorators import login_required
 
 
 def index(request):
@@ -19,32 +23,56 @@ def home(request):
     barbers = Barber.objects.all()
     return render(request, 'barberwebapp/home.html', {'barbers': barbers})
 
-
 def profile(request):
     return render(request,'barberwebapp/profile.html')
 
 def admin_dashboard(request):
     return render(request,'barberwebapp/admin_dashboard.html')
 
-def register(request):
+# Registracija
+def register_view(request):
     if request.method == 'POST':
-        form = UserCreationForm(request.POST)
+        username = request.POST['username']
+        password = request.POST['password']
+        confirm_password = request.POST['confirm_password']
 
-        if form.is_valid():
-            form.save()
-            username = form.cleaned_data['username']
-            password = form.cleaned_data['password1']
+        if password != confirm_password:
+            messages.error(request, 'Lozinke se ne podudaraju!')
+            return redirect('register.html')
 
-            user = authenticate(username=username, password=password)
+        if User.objects.filter(username=username).exists():
+            messages.error(request, 'Korisničko ime već postoji!')
+            return redirect('register.html')
+
+        User.objects.create_user(username=username, password=password)
+        messages.success(request, 'Registracija uspješna! Možete se prijaviti.')
+        return redirect('login.html')
+
+    return render(request, 'register.html')
+
+# Prijava
+def login_view(request):
+    if request.method == 'POST':
+        username = request.POST['username']
+        password = request.POST['password']
+        user = authenticate(request, username=username, password=password)
+
+        if user is not None:
             login(request, user)
-            return redirect('index')
+            return redirect('barberwebapp:home')
+        else:
+            messages.error(request, 'Neispravni podaci za prijavu!')
 
-    else:
-        form = UserCreationForm()
+    return render(request, 'login.html')
 
-    context = {'form': form}
+# Odjava
+def logout_view(request):
+    LOGOUT_REDIRECT_URL(request)
+    return redirect('barberwebapp/login.html')
 
-    return render(request, 'registration/register.html', context)
+@login_required
+def profile_view(request):
+    return render(request, 'barberwebapp/profile.html', {'user': request.user})
 
 class BarberListView(ListView):
     model = Barber

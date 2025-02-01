@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="hr">
+<head>
+    <meta charset="UTF-8">
+    <title>Registracija</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            width: 300px;
+        }
+        h2 {
+            text-align: center;
+            color: #333;
+        }
+        input[type="text"], input[type="password"] {
+            width: 100%;
+            padding: 10px;
+            margin: 8px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #2196F3;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0b7dda;
+        }
+        .link {
+            text-align: center;
+            margin-top: 10px;
+        }
+        .link a {
+            color: #2196F3;
+            text-decoration: none;
+        }
+        .message {
+            color: red;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h2>Registracija</h2>
+    <form method="post">
+        {% csrf_token %}
+        <input type="text" name="username" placeholder="Korisničko ime" required>
+        <input type="password" name="password" placeholder="Lozinka" required>
+        <input type="password" name="confirm_password" placeholder="Potvrdite lozinku" required>
+        <button type="submit">Registriraj se</button>
+    </form>
+    <div class="link">
+        <p>Već imate račun? <a href="{% url 'login' %}">Prijavite se</a></p>
+    </div>
+    {% for message in messages %}
+        <p class="message">{{ message }}</p>
+    {% endfor %}
+</div>
+</body>
+</html>

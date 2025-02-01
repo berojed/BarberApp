@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="hr">
+<head>
+    <meta charset="UTF-8">
+    <title>Profil korisnika</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .profile-container {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            width: 350px;
+        }
+        h2 {
+            color: #333;
+        }
+        .info {
+            margin: 20px 0;
+            font-size: 18px;
+        }
+        button {
+            background-color: #e74c3c;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #c0392b;
+        }
+    </style>
+</head>
+<body>
+<div class="profile-container">
+    <h2>Dobrodošli, {{ user.username }}!</h2>
+    <div class="info">
+        <p>Email: {{ user.email|default:"Nije postavljeno" }}</p>
+        <p>Datum pridruživanja: {{ user.date_joined|date:"d.m.Y" }}</p>
+    </div>
+    <form method="post" action="{% url 'logout' %}">
+        {% csrf_token %}
+        <button type="submit">Odjavi se</button>
+    </form>
+</div>
+</body>
+</html>
