@@ -14,7 +14,7 @@ class Barber(models.Model):
     class Meta: ordering = ['name']
 
 class Service(models.Model):
-    barber=models.ForeignKey(Barber, on_delete=models.CASCADE, related_name='services')
+    barber=models.ForeignKey(Barber, on_delete=models.CASCADE, related_name='services', null=True, blank=True)
     name=models.CharField(max_length=50)
     duration=models.IntegerField()
     description=models.CharField(max_length=50)
@@ -27,7 +27,7 @@ class Service(models.Model):
     
 class Appointment(models.Model):
     user=models.ForeignKey(User, on_delete=models.CASCADE, related_name="appointments")
-    barber=models.ForeignKey(Barber,on_delete=models.CASCADE,related_name="appointments")
+    barber=models.ForeignKey(Barber,on_delete=models.CASCADE,related_name="appointments", null=True, blank=True)
     time=models.TimeField()
     date=models.DateField()
     created_at=models.DateTimeField()
@@ -39,7 +39,7 @@ class Appointment(models.Model):
         return f"Appointment on {self.date} at {self.time} with {self.barber}"
     
 class WorkingHours(models.Model):
-    barber = models.OneToOneField(Barber, on_delete=models.CASCADE, related_name="working_hours")
+    barber = models.OneToOneField(Barber, on_delete=models.CASCADE, related_name="working_hours",null=True, blank=True)
     monday = models.CharField(max_length=50, blank=True, null=True) 
     tuesday = models.CharField(max_length=50, blank=True, null=True)
     wednesday = models.CharField(max_length=50, blank=True, null=True)
@@ -49,7 +49,7 @@ class WorkingHours(models.Model):
     sunday = models.CharField(max_length=50, blank=True, null=True)
 
 class Reviews(models.Model):
-    barber=models.ForeignKey(Barber,on_delete=models.CASCADE, related_name="reviews")
+    barber=models.ForeignKey(Barber,on_delete=models.CASCADE, related_name="reviews", null=True, blank=True)
     user=models.ForeignKey(User,on_delete=models.CASCADE,related_name="reviews")
     rating=models.PositiveBigIntegerField()
     comment=models.CharField(max_length=100)

@@ -6,6 +6,11 @@ class BarberForm(forms.ModelForm):
     class Meta:
         model = Barber
         fields = ['name', 'bio', 'rating']
+    
+    def clean(self):
+        cleaned_data = super().clean()
+        print(f"Cleaned Data: {cleaned_data}")  # Ovo će ispisati podatke u konzolu
+        return cleaned_data
 
 
 class ServiceForm(forms.ModelForm):
