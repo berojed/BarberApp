@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1 class="mb-4">Moji termini</h1>
+    <div class="row">
+        <div class="col-md-12">
+            <ul class="list-group">
+                {% for appointment in appointments %}
+                <li class="list-group-item">
+                    <h5>Termin kod frizera: {{ appointment.barber.name }}</h5>
+                    <p>Datum: {{ appointment.date }}</p>
+                    <p>Vrijeme: {{ appointment.time }}</p>
+                    <p>Status: {% if appointment.is_confirmed %}Potvrđen{% else %}Na čekanju{% endif %}</p>
+                </li>
+                {% empty %}
+                <li class="list-group-item">Trenutno nemate rezerviranih termina.</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+</div>
+{% endblock %}

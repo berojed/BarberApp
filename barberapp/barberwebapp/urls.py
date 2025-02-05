@@ -8,7 +8,7 @@ from .views import (
     create_barber, update_barber, BarberDeleteView, 
     create_service, update_service, ServiceDeleteView, 
     create_appointment, update_appointment, AppointmentDeleteView, 
-    create_review, update_review, ReviewDeleteView,
+    create_review, update_review, ReviewDeleteView,my_appointments, 
 )
 from . import urls_api
 
@@ -41,4 +41,6 @@ urlpatterns = [
     path('reviews/create/', create_review, name='create_review'), 
     path('reviews/<int:pk>/update/', update_review, name='update_review'), 
     path('reviews/<int:pk>/delete/', ReviewDeleteView.as_view(), name='delete_review'),
+    path('moji-termini/', my_appointments, name='my_appointments'),
+      path('home/appointments/create/', views.create_appointment, name='create_appointment'),
 ]

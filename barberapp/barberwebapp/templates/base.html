@@ -22,6 +22,10 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
                     {% if user.is_authenticated %}
+                    <!-- Centrirana stavka "Moji termini" -->
+                    <li class="nav-item mx-auto">
+                        <a class="nav-link" href="{% url 'barberwebapp:my_appointments' %}">Moji termini</a>
+                    </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'barberwebapp:profile' %}">Profile</a>
                     </li>

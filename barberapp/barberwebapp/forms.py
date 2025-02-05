@@ -22,12 +22,11 @@ class ServiceForm(forms.ModelForm):
 class AppointmentForm(forms.ModelForm):
     class Meta:
         model = Appointment
-        fields = ['user', 'barber', 'time', 'date', 'created_at', 'is_confirmed']
+        fields = [ 'barber', 'time', 'date', 'created_at']
         
         widgets = {
             'date': forms.DateInput(attrs={'type': 'date'}),
             'time': forms.TimeInput(attrs={'type': 'time'}),
-            'created_at': forms.DateTimeInput(attrs={'type': 'datetime-local'}),
         }
 
 class ReviewForm(forms.ModelForm):
