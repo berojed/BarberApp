@@ -11,8 +11,9 @@ from .views import (
     ReviewsListView, ReviewsDetailView,
     create_barber, update_barber, BarberDeleteView, 
     create_service, update_service, ServiceDeleteView, 
-    create_review, update_review, ReviewDeleteView,
+    create_review, update_review, ReviewDeleteView,login_view
 )
+from django.contrib.auth.views import LoginView
 
 
 urlpatterns = [
@@ -40,5 +41,6 @@ urlpatterns = [
     path('reviews/<int:pk>/delete/', ReviewDeleteView.as_view(), name='delete_review'),
     path('appointments/<int:pk>/delete/', views.AppointmentDeleteView.as_view(), name='appointment_delete'),
     path('appointments/edit/<int:pk>/', views.edit_appointment, name='appointment_edit'),
+    path('accounts/login/', LoginView.as_view(template_name='barberwebapp/login.html'), name='login'),
 
 ]

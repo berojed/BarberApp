@@ -66,10 +66,10 @@ def login_view(request):
 
     return render(request, 'login.html')
 
-# Odjava
 def logout_view(request):
-    LOGOUT_REDIRECT_URL(request)
+    LOGOUT_REDIRECT_URL(request)  
     return redirect('barberwebapp/login.html')
+
 
 @login_required
 def profile_view(request):
@@ -261,5 +261,22 @@ def update_barber(request, pk):
         form = BarberForm(instance=barber) 
     return render(request, 'barberwebapp/update_barber.html', {'form': form})
 
+def register_view(request):
+    if request.method == 'POST':
+        username = request.POST['username']
+        password = request.POST['password']
+        confirm_password = request.POST['confirm_password']
 
+        if password != confirm_password:
+            messages.error(request, 'Lozinke se ne podudaraju!')
+            return redirect('barberwebapp:register') 
 
+        if User.objects.filter(username=username).exists():
+            messages.error(request, 'Korisničko ime već postoji!')
+            return redirect('barberwebapp:register')
+
+        User.objects.create_user(username=username, password=password)
+        messages.success(request, 'Registracija uspješna! Možete se prijaviti.')
+        return redirect('login')
+    
+    return render(request, 'barberwebapp/register.html')
