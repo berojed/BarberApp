@@ -9,7 +9,6 @@ document.addEventListener("DOMContentLoaded", function() {
     const appointmentsTableBody = document.getElementById('appointmentsTableBody');
     const messageDiv = document.getElementById('message');
 
-    // Funkcija za dohvat CSRF tokena iz kolačića
     function getCookie(name) {
       let cookieValue = null;
       if (document.cookie && document.cookie !== '') {
@@ -25,7 +24,6 @@ document.addEventListener("DOMContentLoaded", function() {
       return cookieValue;
     }
 
-    // Funkcija za dohvat svih termina preko REST API-ja
     function fetchAppointments() {
         fetch('/api/appointments/', {
             method: 'GET',
@@ -42,8 +40,6 @@ document.addEventListener("DOMContentLoaded", function() {
               data.forEach(appointment => {
                   const row = document.createElement('tr');
 
-                  // Pretpostavljamo da appointment.date, appointment.time i appointment.barber
-                  // predstavljaju potrebne podatke (možda trebate prilagoditi format)
                   row.innerHTML = `
                     <td>${appointment.date}</td>
                     <td>${appointment.time}</td>
@@ -63,7 +59,6 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     }
 
-    // Funkcija za brisanje termina
     window.deleteAppointment = function(appointmentId) {
         if (!confirm("Jeste li sigurni da želite obrisati ovaj termin?")) {
             return;
@@ -88,14 +83,10 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     };
 
-    // Funkcija za uređivanje termina
     window.editAppointment = function(appointmentId) {
-        // Za jednostavnost, preusmjerite korisnika na stranicu za uređivanje termina.
-        // Možete implementirati modal ili AJAX formu za inline uređivanje.
         window.location.href = `/home/appointments/edit/${appointmentId}/`;
     };
 
-    // Učitajte termine prilikom učitavanja stranice
     fetchAppointments();
 });
 </script>
@@ -113,9 +104,8 @@ document.addEventListener("DOMContentLoaded", function() {
         <th>Frizer</th>
         <th>Akcije</th>
       </tr>
-    </thead>
+    </thead>    
     <tbody id="appointmentsTableBody">
-      <!-- Termin će se dinamički učitati preko REST API-ja -->
     </tbody>
   </table>
 </div>

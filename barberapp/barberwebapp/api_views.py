@@ -23,3 +23,4 @@ class AppointmentUpdateAPIView(generics.UpdateAPIView):
 
     def get_queryset(self):
         return Appointment.objects.filter(user=self.request.user)
+

@@ -171,6 +171,8 @@ def edit_appointment(request, pk):
     else:
         form = AppointmentForm(instance=appointment)
     return render(request, 'barberwebapp/edit_appointment.html', {'form': form})
+
+
 class BarberDetailView(DetailView):
     model = Barber
     template_name = 'barber_detail.html'

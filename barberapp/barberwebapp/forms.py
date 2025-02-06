@@ -9,7 +9,7 @@ class BarberForm(forms.ModelForm):
     
     def clean(self):
         cleaned_data = super().clean()
-        print(f"Cleaned Data: {cleaned_data}")  # Ovo će ispisati podatke u konzolu
+        print(f"Cleaned Data: {cleaned_data}")
         return cleaned_data
 
 

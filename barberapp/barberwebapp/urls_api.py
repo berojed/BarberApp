@@ -1,4 +1,4 @@
-app_name = 'barberapp'  # ili neki drugi naziv koji želite koristiti
+app_name = 'barberapp'
 
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
