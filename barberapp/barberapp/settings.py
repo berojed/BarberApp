@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'barberwebapp',
     'rest_framework',
+    'widget_tweaks',
 ]
 
 MIDDLEWARE = [

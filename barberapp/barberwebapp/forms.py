@@ -22,12 +22,13 @@ class ServiceForm(forms.ModelForm):
 class AppointmentForm(forms.ModelForm):
     class Meta:
         model = Appointment
-        fields = [ 'barber', 'time', 'date', 'created_at']
-        
+        fields = ['date', 'time', 'barber']
         widgets = {
-            'date': forms.DateInput(attrs={'type': 'date'}),
-            'time': forms.TimeInput(attrs={'type': 'time'}),
+            'date': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
+            'time': forms.TimeInput(attrs={'class': 'form-control', 'type': 'time'}),
+            'barber': forms.Select(attrs={'class': 'form-control'}),
         }
+
 
 class ReviewForm(forms.ModelForm):
     class Meta:

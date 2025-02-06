@@ -42,5 +42,6 @@ urlpatterns = [
     path('reviews/<int:pk>/update/', update_review, name='update_review'), 
     path('reviews/<int:pk>/delete/', ReviewDeleteView.as_view(), name='delete_review'),
     path('moji-termini/', my_appointments, name='my_appointments'),
-      path('home/appointments/create/', views.create_appointment, name='create_appointment'),
+    path('home/appointments/create/', views.create_appointment, name='create_appointment'),
+    path('termini/<int:pk>/otkazi/', views.cancel_appointment, name='cancel_appointment'),
 ]

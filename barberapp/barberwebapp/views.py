@@ -1,4 +1,4 @@
-from datetime import timezone
+from django.utils import timezone
 from django.shortcuts import redirect, render,get_object_or_404
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import authenticate, login
@@ -274,19 +274,29 @@ def my_appointments(request):
     appointments = Appointment.objects.filter(user=request.user)
     return render(request, 'barberwebapp/my_appointments.html', {'appointments': appointments})
 
+
 @login_required
 def create_appointment(request):
-    form = AppointmentForm()
-    barbers = Barber.objects.all()  # Dohvati sve barbere
-
-    if request.method == 'POST':
+    if request.method == "POST":
         form = AppointmentForm(request.POST)
         if form.is_valid():
             appointment = form.save(commit=False)
             appointment.user = request.user
-            appointment.created_at = timezone.now()
+            appointment.created_at = timezone.now() 
             appointment.save()
             return redirect('barberwebapp:my_appointments')
-
-    # Ako forma nije validna, prikaži home s greškama i barberima
+    else:
+        form = AppointmentForm()
+    
+    barbers = Barber.objects.all()
     return render(request, 'barberwebapp/home.html', {'form': form, 'barbers': barbers})
+
+
+@login_required
+def cancel_appointment(request, pk):
+    appointment = get_object_or_404(Appointment, pk=pk, user=request.user)
+    if request.method == "POST":
+        appointment.delete()
+        messages.success(request, "Termin je uspješno otkazan.")
+        return redirect('barberwebapp:my_appointments')
+    return render(request, 'barberwebapp/cancel_appointment.html', {'appointment': appointment})
