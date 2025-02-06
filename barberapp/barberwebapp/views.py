@@ -9,8 +9,8 @@ from .models import User,Barber,Service, Appointment, WorkingHours, Reviews
 from .forms import BarberForm, ServiceForm, AppointmentForm, ReviewForm
 from django.urls import reverse_lazy
 from django.views.generic import DeleteView
-from rest_framework import viewsets
-from .serializers import BarberSerializer
+from rest_framework import viewsets,permissions,generics
+from .serializers import BarberSerializer,AppointmentSerializer
 from rest_framework.permissions import IsAuthenticated
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
@@ -135,7 +135,30 @@ class ReviewsListView(ListView):
             queryset = queryset.filter(rating__gte=min_rating)
         return queryset
     
+class BarberDeleteView(DeleteView):
+    model = Barber
+    template_name = 'barberwebapp/barber_confirm_delete.html'
+    success_url = reverse_lazy('barber_list')
 
+class ServiceDeleteView(DeleteView): 
+    model = Service 
+    template_name = 'barberwebapp/service_confirm_delete.html' 
+    success_url = reverse_lazy('service_list')
+
+class AppointmentDeleteView(DeleteView):
+    model = Appointment
+    template_name = 'barberwebapp/appointment_confirm_delete.html'
+    success_url = reverse_lazy('appointment_list')
+
+class ReviewDeleteView(DeleteView):
+    model = Reviews
+    template_name = 'barberwebapp/review_confirm_delete.html'
+    success_url = reverse_lazy('reviews_list')
+
+@login_required
+def my_appointments(request):
+    appointments = Appointment.objects.filter(user=request.user)
+    return render(request, 'barberwebapp/my_appointments.html', {'appointments': appointments})
 
 class BarberDetailView(DetailView):
     model = Barber
@@ -192,21 +215,6 @@ def update_service(request, pk):
         form = ServiceForm(instance=service)
     return render(request, 'barberwebapp/update_service.html', {'form': form})
 
-
-
-
-def update_appointment(request, pk):
-    appointment = get_object_or_404(Appointment, pk=pk)
-    if request.method == 'POST':
-        form = AppointmentForm(request.POST, instance=appointment)
-        if form.is_valid():
-            form.save()
-            return redirect('appointment_detail', pk=pk)
-    else:
-        form = AppointmentForm(instance=appointment)
-    return render(request, 'barberwebapp/update_appointment.html', {'form': form})
-
-
 def create_review(request):
     if request.method == 'POST':
         form = ReviewForm(request.POST)
@@ -242,61 +250,3 @@ def update_barber(request, pk):
 
 
 
-class BarberDeleteView(DeleteView):
-    model = Barber
-    template_name = 'barberwebapp/barber_confirm_delete.html'
-    success_url = reverse_lazy('barber_list')
-
-class ServiceDeleteView(DeleteView): 
-    model = Service 
-    template_name = 'barberwebapp/service_confirm_delete.html' 
-    success_url = reverse_lazy('service_list')
-
-class AppointmentDeleteView(DeleteView):
-    model = Appointment
-    template_name = 'barberwebapp/appointment_confirm_delete.html'
-    success_url = reverse_lazy('appointment_list')
-
-class ReviewDeleteView(DeleteView):
-    model = Reviews
-    template_name = 'barberwebapp/review_confirm_delete.html'
-    success_url = reverse_lazy('reviews_list')
-
-
-class BarberViewSet(viewsets.ModelViewSet):
-    queryset = Barber.objects.all()
-    serializer_class = BarberSerializer
-    permission_classes = [IsAuthenticated]
-
-@login_required
-def my_appointments(request):
-    # Dohvati sve termine za prijavljenog korisnika
-    appointments = Appointment.objects.filter(user=request.user)
-    return render(request, 'barberwebapp/my_appointments.html', {'appointments': appointments})
-
-
-@login_required
-def create_appointment(request):
-    if request.method == "POST":
-        form = AppointmentForm(request.POST)
-        if form.is_valid():
-            appointment = form.save(commit=False)
-            appointment.user = request.user
-            appointment.created_at = timezone.now() 
-            appointment.save()
-            return redirect('barberwebapp:my_appointments')
-    else:
-        form = AppointmentForm()
-    
-    barbers = Barber.objects.all()
-    return render(request, 'barberwebapp/home.html', {'form': form, 'barbers': barbers})
-
-
-@login_required
-def cancel_appointment(request, pk):
-    appointment = get_object_or_404(Appointment, pk=pk, user=request.user)
-    if request.method == "POST":
-        appointment.delete()
-        messages.success(request, "Termin je uspješno otkazan.")
-        return redirect('barberwebapp:my_appointments')
-    return render(request, 'barberwebapp/cancel_appointment.html', {'appointment': appointment})

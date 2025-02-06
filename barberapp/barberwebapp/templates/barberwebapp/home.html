@@ -13,7 +13,7 @@
           <li class="list-group-item">
             <h5>{{ barber.name }}</h5>
             <p>{{ barber.bio }}</p>
-            <p>Rating: {{barber.rating}}</p>
+            <p>Rating: {{ barber.rating }}</p>
           </li>
         {% empty %}
           <li class="list-group-item">Trenutno nema dostupnih frizera.</li>
@@ -23,7 +23,7 @@
     <!-- Forma za rezervaciju termina -->
     <div class="col-md-6">
       <h2>Rezervacija termina</h2>
-      <form method="POST" action="{% url 'barberwebapp:create_appointment' %}">
+      <form id="appointmentForm">
         {% csrf_token %}
         <div class="mb-3">
           <label for="barber" class="form-label">Izaberite frizera</label>
@@ -43,22 +43,70 @@
           <input type="time" id="time" name="time" class="form-control" required>
         </div>
         <button type="submit" class="btn btn-primary">Rezerviraj termin</button>
-        {% if form.errors %}
-  <div class="alert alert-danger mt-3">
-    <ul>
-      {% for field in form %}
-        {% for error in field.errors %}
-          <li>{{ field.label }}: {{ error }}</li>
-        {% endfor %}
-      {% endfor %}
-      {% for error in form.non_field_errors %}
-        <li>{{ error }}</li>
-      {% endfor %}
-    </ul>
-  </div>
-{% endif %}
       </form>
+      <!-- Mjesto za prikaz poruka o uspjehu ili grešci -->
+      <div id="message" class="mt-3"></div>
     </div>
   </div>
 </div>
+
+<script>
+  // Funkcija za dohvat CSRF tokena iz kolačića
+  function getCookie(name) {
+      let cookieValue = null;
+      if (document.cookie && document.cookie !== '') {
+          const cookies = document.cookie.split(';');
+          for (let i = 0; i < cookies.length; i++) {
+              const cookie = cookies[i].trim();
+              if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                  cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                  break;
+              }
+          }
+      }
+      return cookieValue;
+  }
+
+  document.getElementById('appointmentForm').addEventListener('submit', function(event) {
+    event.preventDefault(); // Sprječava standardno slanje forme
+
+    // Prikupljanje podataka iz forme
+    const barber = document.getElementById('barber').value;
+    const date = document.getElementById('date').value;
+    const time = document.getElementById('time').value;
+
+    // Podaci koje šaljemo REST API-ju
+    const data = {
+      barber: barber,
+      date: date,
+      time: time
+    };
+
+    // Slanje POST zahtjeva REST API endpointu
+    fetch('/api/appointments/', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRFToken': getCookie('csrftoken')
+      },
+      body: JSON.stringify(data)
+    })
+    .then(response => {
+      if (!response.ok) {
+        return response.json().then(err => { throw err; });
+      }
+      return response.json();
+    })
+    .then(result => {
+      // Uspješno kreiran termin
+      document.getElementById('message').innerHTML = '<div class="alert alert-success">Termin uspješno rezerviran!</div>';
+      // Resetiranje forme
+      document.getElementById('appointmentForm').reset();
+    })
+    .catch(error => {
+      console.error('Error:', error);
+      document.getElementById('message').innerHTML = '<div class="alert alert-danger">Došlo je do greške: ' + JSON.stringify(error) + '</div>';
+    });
+  });
+</script>
 {% endblock %}

@@ -1,49 +1,40 @@
-{% extends 'base.html' %}
+{% extends "base.html" %}
 {% load static %}
 
 {% block title %}Moji Termini{% endblock %}
 
 {% block content %}
-<div class="container">
-    <h2 class="mt-4 mb-3">Moji termini</h2>
-    
-    {% if messages %}
-        {% for message in messages %}
-            <div class="alert alert-{{ message.tags }}">
-                {{ message }}
-            </div>
+<div class="container mt-4">
+  <h2 class="mb-3">Moji Termini</h2>
+  
+  {% if appointments %}
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>Datum</th>
+          <th>Vrijeme</th>
+          <th>Frizer</th>
+          <th>Akcije</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for appointment in appointments %}
+          <tr>
+            <td>{{ appointment.date }}</td>
+            <td>{{ appointment.time }}</td>
+            <td>{{ appointment.barber }}</td>
+            <td>
+              <!-- Gumb za uređivanje termina -->
+              <a href="{% url 'barberwebapp:appointment_update' appointment.pk %}" class="btn btn-warning btn-sm">Edit</a>
+              <!-- Gumb za brisanje termina -->
+              <a href="{% url 'barberwebapp:appointment_delete' appointment.pk %}" class="btn btn-danger btn-sm">Delete</a>
+            </td>
+          </tr>
         {% endfor %}
-    {% endif %}
-
-    {% if appointments %}
-        <table class="table table-striped">
-            <thead>
-                <tr>
-                    <th>Datum</th>
-                    <th>Vrijeme</th>
-                    <th>Barber</th>
-                    <th>Akcije</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for appointment in appointments %}
-                    <tr>
-                        <td>{{ appointment.date }}</td>
-                        <td>{{ appointment.time }}</td>
-                        <td>{{ appointment.barber }}</td>
-                        <td>
-                            <!-- Link na stranicu za otkazivanje termina -->
-                            <a href="{% url 'barberwebapp:cancel_appointment' appointment.pk %}" class="btn btn-danger btn-sm">
-                                Otkazi
-                            </a>
-                            
-                        </td>
-                    </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    {% else %}
-        <p>Nema zakazanih termina.</p>
-    {% endif %}
+      </tbody>
+    </table>
+  {% else %}
+    <p>Nema zakazanih termina.</p>
+  {% endif %}
 </div>
 {% endblock %}

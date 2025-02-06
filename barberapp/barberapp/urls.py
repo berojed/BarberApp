@@ -23,4 +23,5 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('home/', include('barberwebapp.urls')),
     path('accounts/', include('django.contrib.auth.urls')),
+    path('api/', include('barberwebapp.urls_api', namespace='api')),
 ]
