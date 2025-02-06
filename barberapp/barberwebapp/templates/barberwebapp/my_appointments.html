@@ -3,38 +3,120 @@
 
 {% block title %}Moji Termini{% endblock %}
 
+{% block extra_js %}
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    const appointmentsTableBody = document.getElementById('appointmentsTableBody');
+    const messageDiv = document.getElementById('message');
+
+    // Funkcija za dohvat CSRF tokena iz kolačića
+    function getCookie(name) {
+      let cookieValue = null;
+      if (document.cookie && document.cookie !== '') {
+          const cookies = document.cookie.split(';');
+          for (let i = 0; i < cookies.length; i++) {
+              const cookie = cookies[i].trim();
+              if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                  cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                  break;
+              }
+          }
+      }
+      return cookieValue;
+    }
+
+    // Funkcija za dohvat svih termina preko REST API-ja
+    function fetchAppointments() {
+        fetch('/api/appointments/', {
+            method: 'GET',
+            headers: {
+              'Content-Type': 'application/json'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            appointmentsTableBody.innerHTML = '';
+            if(data.length === 0) {
+                appointmentsTableBody.innerHTML = '<tr><td colspan="4">Nema zakazanih termina.</td></tr>';
+            } else {
+              data.forEach(appointment => {
+                  const row = document.createElement('tr');
+
+                  // Pretpostavljamo da appointment.date, appointment.time i appointment.barber
+                  // predstavljaju potrebne podatke (možda trebate prilagoditi format)
+                  row.innerHTML = `
+                    <td>${appointment.date}</td>
+                    <td>${appointment.time}</td>
+                    <td>${appointment.barber}</td>
+                    <td>
+                      <button class="btn btn-warning btn-sm" onclick="editAppointment(${appointment.id})">Edit</button>
+                      <button class="btn btn-danger btn-sm" onclick="deleteAppointment(${appointment.id})">Delete</button>
+                    </td>
+                  `;
+                  appointmentsTableBody.appendChild(row);
+              });
+            }
+        })
+        .catch(error => {
+            console.error('Error fetching appointments:', error);
+            messageDiv.innerHTML = `<div class="alert alert-danger">Greška pri dohvaćanju termina</div>`;
+        });
+    }
+
+    // Funkcija za brisanje termina
+    window.deleteAppointment = function(appointmentId) {
+        if (!confirm("Jeste li sigurni da želite obrisati ovaj termin?")) {
+            return;
+        }
+        fetch(`/api/appointments/${appointmentId}/`, {
+            method: 'DELETE',
+            headers: {
+              'X-CSRFToken': getCookie('csrftoken')
+            }
+        })
+        .then(response => {
+            if (response.status === 204) {
+                messageDiv.innerHTML = `<div class="alert alert-success">Termin uspješno obrisan</div>`;
+                fetchAppointments();
+            } else {
+                return response.json().then(err => { throw err; });
+            }
+        })
+        .catch(error => {
+            console.error('Error deleting appointment:', error);
+            messageDiv.innerHTML = `<div class="alert alert-danger">Greška pri brisanju termina</div>`;
+        });
+    };
+
+    // Funkcija za uređivanje termina
+    window.editAppointment = function(appointmentId) {
+        // Za jednostavnost, preusmjerite korisnika na stranicu za uređivanje termina.
+        // Možete implementirati modal ili AJAX formu za inline uređivanje.
+        window.location.href = `/home/appointments/edit/${appointmentId}/`;
+    };
+
+    // Učitajte termine prilikom učitavanja stranice
+    fetchAppointments();
+});
+</script>
+{% endblock %}
+
 {% block content %}
-<div class="container mt-4">
-  <h2 class="mb-3">Moji Termini</h2>
-  
-  {% if appointments %}
-    <table class="table table-striped">
-      <thead>
-        <tr>
-          <th>Datum</th>
-          <th>Vrijeme</th>
-          <th>Frizer</th>
-          <th>Akcije</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for appointment in appointments %}
-          <tr>
-            <td>{{ appointment.date }}</td>
-            <td>{{ appointment.time }}</td>
-            <td>{{ appointment.barber }}</td>
-            <td>
-              <!-- Gumb za uređivanje termina -->
-              <a href="{% url 'barberwebapp:appointment_update' appointment.pk %}" class="btn btn-warning btn-sm">Edit</a>
-              <!-- Gumb za brisanje termina -->
-              <a href="{% url 'barberwebapp:appointment_delete' appointment.pk %}" class="btn btn-danger btn-sm">Delete</a>
-            </td>
-          </tr>
-        {% endfor %}
-      </tbody>
-    </table>
-  {% else %}
-    <p>Nema zakazanih termina.</p>
-  {% endif %}
+<div class="container mt-5">
+  <h2>Moji Termini</h2>
+  <div id="message" class="mb-3"></div>
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>Datum</th>
+        <th>Vrijeme</th>
+        <th>Frizer</th>
+        <th>Akcije</th>
+      </tr>
+    </thead>
+    <tbody id="appointmentsTableBody">
+      <!-- Termin će se dinamički učitati preko REST API-ja -->
+    </tbody>
+  </table>
 </div>
 {% endblock %}

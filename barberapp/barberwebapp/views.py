@@ -160,6 +160,17 @@ def my_appointments(request):
     appointments = Appointment.objects.filter(user=request.user)
     return render(request, 'barberwebapp/my_appointments.html', {'appointments': appointments})
 
+@login_required
+def edit_appointment(request, pk):
+    appointment = get_object_or_404(Appointment, pk=pk, user=request.user)
+    if request.method == 'POST':
+        form = AppointmentForm(request.POST, instance=appointment)
+        if form.is_valid():
+            form.save()
+            return redirect('barberwebapp:my_appointments')
+    else:
+        form = AppointmentForm(instance=appointment)
+    return render(request, 'barberwebapp/edit_appointment.html', {'form': form})
 class BarberDetailView(DetailView):
     model = Barber
     template_name = 'barber_detail.html'

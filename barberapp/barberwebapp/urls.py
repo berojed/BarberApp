@@ -19,6 +19,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include(urls_api)),
     path('', views.home, name='home'),
+    path('appointments/my/', views.my_appointments, name='my_appointments'),
     path('register/', views.register_view, name='register'),
     path('logout/', views.logout_view, name='logout'),
     path('profile/', views.profile_view, name='profile'),
@@ -37,7 +38,7 @@ urlpatterns = [
     path('services/<int:pk>/delete/', ServiceDeleteView.as_view(), name='delete_service'), 
     path('reviews/<int:pk>/update/', update_review, name='update_review'), 
     path('reviews/<int:pk>/delete/', ReviewDeleteView.as_view(), name='delete_review'),
-    path('appointments/<int:pk>/update/', views.update_appointment, name='appointment_update'),
     path('appointments/<int:pk>/delete/', views.AppointmentDeleteView.as_view(), name='appointment_delete'),
+    path('appointments/edit/<int:pk>/', views.edit_appointment, name='appointment_edit'),
 
 ]
