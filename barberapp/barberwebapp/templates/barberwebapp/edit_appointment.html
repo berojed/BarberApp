@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Uredi Termin{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+  <h2>Uredi Termin</h2>
+  <form method="POST">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn btn-primary">Spremi promjene</button>
+    <a href="{% url 'barberwebapp:my_appointments' %}" class="btn btn-secondary">Odustani</a>
+  </form>
+</div>
+{% endblock %}
