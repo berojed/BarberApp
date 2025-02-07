@@ -4,13 +4,13 @@ from .models import  User,Barber,Service,Appointment,WorkingHours, Reviews
 
 class WorkingHoursInline(admin.StackedInline):
     model = WorkingHours
-    extra = 0  # Ne dodaje prazne forme automatski
-    can_delete = True  # Dozvoljava brisanje ako je potrebno
+    extra = 0  
+    can_delete = True  
 
 
 class BarberAdmin(admin.ModelAdmin):
-    inlines = [WorkingHoursInline]  # Povezivanje radnog vremena s barberom
-    list_display = ('name', 'rating')  # Prikaz imena i ocjene u admin sučelju
+    inlines = [WorkingHoursInline]  
+    list_display = ('name', 'rating')  
 
 admin.site.register(User, UserAdmin)
 admin.site.register(Barber)
