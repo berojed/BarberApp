@@ -13,6 +13,9 @@ class Barber(models.Model):
 
     class Meta: ordering = ['name']
 
+    def __str__(self):
+        return self.name
+
 class Service(models.Model):
     barber=models.ForeignKey(Barber, on_delete=models.CASCADE, related_name='services', null=True, blank=True)
     name=models.CharField(max_length=50)

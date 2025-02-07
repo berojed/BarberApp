@@ -7,6 +7,9 @@ class BarberSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class AppointmentSerializer(serializers.ModelSerializer):
+
+    barber = serializers.StringRelatedField()
+    
     class Meta:
         model = Appointment
         fields = ['id', 'user', 'barber', 'date', 'time', 'created_at', 'is_confirmed']
