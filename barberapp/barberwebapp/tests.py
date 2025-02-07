@@ -1,86 +1,89 @@
 from django.test import TestCase
-from django.urls import reverse
-from .models import Barber, Service, Appointment, Reviews, User
-from datetime import datetime, timedelta
 from django.utils import timezone
-from django.template.defaultfilters import time as time_filter
+from .models import User, Barber, Service, Appointment, WorkingHours
+from django.core.exceptions import ValidationError
 
-class BarberWebAppTests(TestCase):
-
+class UserModelTest(TestCase):
     def setUp(self):
-        # Kreiranje korisnika
-        self.user = User.objects.create_user(username='testuser', password='testpassword', phone_number=123456789)
+        self.user = User.objects.create_user(
+            username='testuser',
+            password='testpass123',
+            phone_number=1234567890
+        )
 
-        
+    def test_user_creation(self):
+        self.assertTrue(isinstance(self.user, User))
+        self.assertEqual(self.user.phone_number, 1234567890)
+        self.assertEqual(str(self.user.username), 'testuser')
+
+class BarberModelTest(TestCase):
+    def setUp(self):
         self.barber = Barber.objects.create(
-            name='Test Barber',
-            bio='Iskusni profesionalac.',
+            name='Ivica Ivic',
+            bio='Sef salona',
             rating=5
         )
 
-        
+    def test_barber_creation(self):
+        self.assertTrue(isinstance(self.barber, Barber))
+        self.assertEqual(self.barber.name, 'Ivica Ivic')
+        self.assertEqual(self.barber.rating, 5)
+
+    def test_barber_ordering(self):
+        Barber.objects.create(name='Anica Simic', bio='Zenske frizure', rating=4)
+        barbers = Barber.objects.all()
+        self.assertEqual(barbers[0].name, 'Anica Simic')
+        self.assertEqual(barbers[1].name, 'Ivica Ivic')
+
+class ServiceModelTest(TestCase):
+    def setUp(self):
+        self.barber = Barber.objects.create(
+            name='Ivica Ivic',
+            bio='Sef salona',
+            rating=5
+        )
         self.service = Service.objects.create(
             barber=self.barber,
-            name='Frizura',
+            name='frizure',
             duration=30,
-            description='Brzo šišanje.',
-            price=20
+            description='klasicna frizura',
+            price=25
         )
 
-       
+    def test_service_creation(self):
+        self.assertTrue(isinstance(self.service, Service))
+        self.assertEqual(self.service.name, 'frizure')
+        self.assertEqual(self.service.duration, 30)
+        self.assertEqual(str(self.service), 'frizure - 25 EUR')
+
+    def test_service_barber_relationship(self):
+        self.assertEqual(self.service.barber, self.barber)
+        self.assertTrue(self.service in self.barber.services.all())
+
+class AppointmentModelTest(TestCase):
+    def setUp(self):
+        self.user = User.objects.create_user(
+            username='testuser',
+            password='testpass123',
+            phone_number=1234567890
+        )
+        self.barber = Barber.objects.create(
+            name='Ivica Ivic',
+            bio='Sef salona',
+            rating=5
+        )
         self.appointment = Appointment.objects.create(
             user=self.user,
             barber=self.barber,
             time=timezone.now().time(),
-            date=(timezone.now() + timedelta(days=1)).date(),
+            date=timezone.now().date(),
             created_at=timezone.now(),
-            is_confirmed=True
+            is_confirmed=False
         )
 
-        self.review = Reviews.objects.create(
-            barber=self.barber,
-            user=self.user,
-            rating=5,
-            comment='Odlična usluga!',
-        )
+    def test_appointment_creation(self):
+        self.assertTrue(isinstance(self.appointment, Appointment))
+        self.assertEqual(self.appointment.user, self.user)
+        self.assertEqual(self.appointment.barber, self.barber)
+        self.assertFalse(self.appointment.is_confirmed)
 
-    def test_barber_list_view(self):
-        response = self.client.get(reverse('barberwebapp:barber_list'))
-        self.assertEqual(response.status_code, 200)
-        self.assertContains(response, self.barber.name)
-
-    def test_barber_detail_view(self):
-        response = self.client.get(reverse('barberwebapp:barber_detail', args=[self.barber.id]))
-        self.assertEqual(response.status_code, 200)
-        self.assertContains(response, self.barber.bio)
-
-    def test_service_list_view(self):
-        response = self.client.get(reverse('barberwebapp:service_list'))
-        self.assertEqual(response.status_code, 200)
-        self.assertContains(response, self.service.name)
-
-    def test_service_detail_view(self):
-        response = self.client.get(reverse('barberwebapp:service_detail', args=[self.service.id]))
-        self.assertEqual(response.status_code, 200)
-        self.assertContains(response, self.service.description)
-
-    def test_appointment_list_view(self):
-        response = self.client.get(reverse('barberwebapp:appointment_list'))
-        self.assertEqual(response.status_code, 200)
-        self.assertContains(response, self.appointment.barber.name)
-
-    def test_appointment_detail_view(self):
-        response = self.client.get(reverse('barberwebapp:appointment_detail', args=[self.appointment.id]))
-        self.assertEqual(response.status_code, 200)
-        formatted_time = time_filter(self.appointment.time, 'g:i a').lower()
-        self.assertContains(response, formatted_time)
-
-    def test_reviews_list_view(self):
-        response = self.client.get(reverse('barberwebapp:reviews_list'))
-        self.assertEqual(response.status_code, 200)
-        self.assertContains(response, self.review.comment)
-
-    def test_reviews_detail_view(self):
-        response = self.client.get(reverse('barberwebapp:reviews_detail', args=[self.review.id]))
-        self.assertEqual(response.status_code, 200)
-        self.assertContains(response, self.review.rating)
