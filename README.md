@@ -8,5 +8,7 @@
 - Pregled rezervacija svih korisnika za administratore
 
 
-## Autor
+## Autori
 - [Bernard Jedvaj](https://github.com/berojed)
+
+- [Ante Ujcic](https://github.com/AnteUjcic)
